@@ -1,0 +1,31 @@
+expense-tracker/
+├── server/
+│   ├── config/
+│   │   └── db.js
+│   ├── models/
+│   │   └── Transaction.js
+│   ├── routes/
+│   │   └── transactionRoutes.js
+│   ├── controllers/
+│   │   └── transactionController.js
+│   └── server.js
+├── client/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── TransactionForm.jsx
+│   │   │   ├── TransactionList.jsx
+│   │   │   └── CategorySelect.jsx
+│   │   ├── contexts/
+│   │   │   └── TransactionContext.jsx
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── AddTransaction.jsx
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── tailwind.config.js
+│   └── postcss.config.js
+├── .env
+└── package.json
