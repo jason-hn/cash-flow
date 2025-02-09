@@ -40,4 +40,4 @@ A modern, intuitive personal finance management application built with React and
 
 ## License
 
-MIT
+MIT 
