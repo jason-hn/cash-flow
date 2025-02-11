@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { TransactionAPI } from '../api/transactions';
-import { handleAPIError } from '../utils/error';
+import { TransactionAPI } from '../../api/transactions';
+import { handleAPIError } from '../../utils/error';
 
 export default function TransactionList({ transactions, period, onTransactionChange }) {
   const [editingId, setEditingId] = useState(null);

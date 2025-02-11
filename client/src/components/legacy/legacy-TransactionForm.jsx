@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TransactionAPI } from '../api/transactions';
+import { TransactionAPI } from '../../api/transactions';
 
 const CATEGORIES = ['grocery', 'entertainment', 'clothing', 'bills', 'restaurant', 'transportation', 'income'];
 

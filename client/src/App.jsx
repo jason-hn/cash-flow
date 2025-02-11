@@ -1,19 +1,31 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import './App.css'
-import TransactionForm from './components/TransactionForm'
-import Dashboard from './components/Dashboard'
+import { BrowserRouter as Router } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Navbar from './components/layout/Navbar';
+import Sidebar from './components/layout/Sidebar';
+import Dashboard from './pages/Dashboard';
 
-const queryClient = new QueryClient()
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="max-w-2xl mx-auto p-4">
-        <div className="grid gap-8">
-          <Dashboard />
-          <TransactionForm />
+      <Router>
+        <div className="min-h-screen bg-bg">
+          <Navbar />
+          <Sidebar />
+          <main className="ml-52 pt-16">
+            <Dashboard />
+          </main>
         </div>
-      </div>
+      </Router>
     </QueryClientProvider>
-  )
+  );
 }
