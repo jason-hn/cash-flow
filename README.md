@@ -13,7 +13,7 @@ A modern, intuitive personal finance management application built with React and
 
 ## Tech Stack
 
-- Frontend: React, TailwindCSS, date-fns
+- Frontend: React, TailwindCSS
 - Backend: Node.js, Express, MongoDB
 - Development: Vite, ESLint
 
