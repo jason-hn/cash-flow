@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { TransactionAPI } from '../api/transactions';
 
 const CATEGORIES = ['grocery', 'entertainment', 'clothing', 'bills', 'restaurant', 'transportation', 'income'];
 
@@ -22,7 +23,7 @@ export default function TransactionForm() {
   });
 
   const mutation = useMutation({
-    mutationFn: postTransaction,
+    mutationFn: TransactionAPI.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       setFormData({ 

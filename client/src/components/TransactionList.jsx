@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-
+import { TransactionAPI } from '../api/transactions';
+import { handleAPIError } from '../utils/error';
 
 export default function TransactionList({ transactions, period, onTransactionChange }) {
   const [editingId, setEditingId] = useState(null);
@@ -12,36 +13,24 @@ export default function TransactionList({ transactions, period, onTransactionCha
 
   // Update mutation
   const updateMutation = useMutation({
-    mutationFn: async (transaction) => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions/${transaction._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...transaction,
-          amount: editForm.amount
-        })
-      });
-      if (!response.ok) throw new Error('Failed to update transaction');
-      return response.json();
-    },
+    mutationFn: (transaction) => TransactionAPI.update(transaction._id, {
+      ...transaction,
+      amount: editForm.amount
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       setEditingId(null);
-    }
+    },
+    onError: handleAPIError
   });
 
   // Delete mutation
   const deleteMutation = useMutation({
-    mutationFn: async (id) => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions/${id}`, {
-        method: 'DELETE'
-      });
-      if (!response.ok) throw new Error('Failed to delete transaction');
-      return response.json();
-    },
+    mutationFn: (id) => TransactionAPI.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
-    }
+    },
+    onError: handleAPIError
   });
 
   const getPeriodLabel = () => {

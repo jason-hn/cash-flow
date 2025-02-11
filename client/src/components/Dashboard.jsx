@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import TransactionList from './TransactionList';
+import { TransactionAPI } from '../api/transactions';
 
 const fetchTransactions = async (period) => {
-  const url = period === 'all' 
-    ? `${import.meta.env.VITE_API_URL}/transactions`
-    : `${import.meta.env.VITE_API_URL}/transactions/period?period=${period}`;
-  
-  const response = await fetch(url);
-  return response.json();
+  if (period === 'all'){
+    return TransactionAPI.getAll();
+  }
+  else {
+    return TransactionAPI.getByPeriod(period);
+  }
 };
 
 export default function Dashboard() {
