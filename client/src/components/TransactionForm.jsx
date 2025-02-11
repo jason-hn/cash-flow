@@ -4,43 +4,37 @@ import { TransactionAPI } from '../api/transactions';
 
 const CATEGORIES = ['grocery', 'entertainment', 'clothing', 'bills', 'restaurant', 'transportation', 'income'];
 
-const postTransaction = async (transactionData) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(transactionData)
-  });
-  return response.json();
-};
-
 export default function TransactionForm() {
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     amount: '',
     description: '',
     category: 'grocery',
-    date: new Date().toISOString().slice(0, 16) // Format: "YYYY-MM-DDTHH:mm"
+    date: new Date().toLocaleString('sv', { dateStyle: 'short', timeStyle: 'short' }).replace(' ', 'T')
   });
 
   const mutation = useMutation({
-    mutationFn: TransactionAPI.create,
+    mutationFn: async (data) => {
+      const utcDate = new Date(data.date);
+      return TransactionAPI.create({
+        ...data,
+        date: utcDate.toISOString()
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       setFormData({ 
         amount: '', 
         description: '', 
         category: 'grocery',
-        date: new Date().toISOString().slice(0, 16)
+        date: new Date().toLocaleString('sv', { dateStyle: 'short', timeStyle: 'short' }).replace(' ', 'T')
       });
     }
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mutation.mutate({
-      ...formData,
-      date: new Date(formData.date).toISOString()
-    });
+    mutation.mutate(formData);
   };
 
   return (
