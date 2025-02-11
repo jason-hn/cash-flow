@@ -1,41 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import TransactionList from './TransactionList';
 
-export default function Dashboard({ period, setPeriod }) {
-  const [transactions, setTransactions] = useState([]);
-  const [balance, setBalance] = useState(0);
+const fetchTransactions = async (period) => {
+  const url = period === 'all' 
+    ? `${import.meta.env.VITE_API_URL}/transactions`
+    : `${import.meta.env.VITE_API_URL}/transactions/period?period=${period}`;
+  
+  const response = await fetch(url);
+  return response.json();
+};
 
-  useEffect(() => {
-    fetchTransactions();
-  }, [period]); // Refetch when period changes
+export default function Dashboard() {
+  const [period, setPeriod] = useState('all');
+  const { data: transactions = [] } = useQuery({
+    queryKey: ['transactions', period],
+    queryFn: () => fetchTransactions(period)
+  });
 
-  useEffect(() => {
-    // Calculate balance whenever transactions change
-    const newBalance = transactions.reduce((acc, transaction) => {
-      return transaction.category === 'income' 
-        ? acc + Number(transaction.amount)
-        : acc - Number(transaction.amount);
-    }, 0);
-    setBalance(newBalance);
-  }, [transactions]);
-
-  const fetchTransactions = async () => {
-    try {
-      const url = period === 'all' 
-        ? `${import.meta.env.VITE_API_URL}/transactions`
-        : `${import.meta.env.VITE_API_URL}/transactions/period?period=${period}`;
-      
-      const response = await fetch(url);
-      const data = await response.json();
-      setTransactions(data);
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-    }
-  };
-
-  const handleTransactionAdd = (newTransaction) => {
-    setTransactions(prev => [...prev, newTransaction]);
-  }
+  const balance = transactions.reduce((acc, transaction) => (
+    transaction.category === 'income' 
+      ? acc + Number(transaction.amount)
+      : acc - Number(transaction.amount)
+  ), 0);
 
   return (
     <div className="space-y-8">

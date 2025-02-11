@@ -1,10 +1,47 @@
 import { useState, useEffect } from 'react';
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
-export default function TransactionList({ transactions, period }) {
+
+export default function TransactionList({ transactions, period, onTransactionChange }) {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({
     amount: ''
+  });
+  const queryClient = useQueryClient();
+
+  // Update mutation
+  const updateMutation = useMutation({
+    mutationFn: async (transaction) => {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions/${transaction._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...transaction,
+          amount: editForm.amount
+        })
+      });
+      if (!response.ok) throw new Error('Failed to update transaction');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      setEditingId(null);
+    }
+  });
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions/${id}`, {
+        method: 'DELETE'
+      });
+      if (!response.ok) throw new Error('Failed to delete transaction');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+    }
   });
 
   const getPeriodLabel = () => {
@@ -48,42 +85,9 @@ export default function TransactionList({ transactions, period }) {
     });
   };
 
-  const handleUpdate = async (transaction) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions/${transaction._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...transaction,
-          amount: editForm.amount
-        })
-      });
-      
-      if (!response.ok) throw new Error('Failed to update transaction');
-      
-      setEditingId(null);
-      // Trigger a refresh of the transactions list
-      window.location.reload();
-    } catch (error) {
-      console.error('Error updating transaction:', error);
-    }
-  };
-
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     if (!window.confirm('Are you sure you want to delete this transaction?')) return;
-    
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions/${id}`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) throw new Error('Failed to delete transaction');
-      
-      // Trigger a refresh of the transactions list
-      window.location.reload();
-    } catch (error) {
-      console.error('Error deleting transaction:', error);
-    }
+    deleteMutation.mutate(id);
   };
 
   return (
@@ -125,7 +129,7 @@ export default function TransactionList({ transactions, period }) {
                           className="w-24 p-1 border rounded"
                         />
                         <button
-                          onClick={() => handleUpdate(transaction)}
+                          onClick={() => updateMutation.mutate(transaction)}
                           className="p-1 text-green-600 hover:text-green-800"
                         >
                           ✓

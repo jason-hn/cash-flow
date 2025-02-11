@@ -1,8 +1,19 @@
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const CATEGORIES = ['grocery', 'entertainment', 'clothing', 'bills', 'restaurant', 'transportation', 'income'];
 
+const postTransaction = async (transactionData) => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(transactionData)
+  });
+  return response.json();
+};
+
 export default function TransactionForm() {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     amount: '',
     description: '',
@@ -10,28 +21,25 @@ export default function TransactionForm() {
     date: new Date().toISOString().slice(0, 16) // Format: "YYYY-MM-DDTHH:mm"
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          date: new Date(formData.date).toISOString()
-        })
-      });
-      const data = await response.json();
+  const mutation = useMutation({
+    mutationFn: postTransaction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
       setFormData({ 
         amount: '', 
         description: '', 
         category: 'grocery',
         date: new Date().toISOString().slice(0, 16)
       });
-      // The Dashboard will fetch the updated transactions on its own
-    } catch (error) {
-      console.error('Error adding transaction:', error);
     }
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutation.mutate({
+      ...formData,
+      date: new Date(formData.date).toISOString()
+    });
   };
 
   return (
@@ -83,6 +91,9 @@ export default function TransactionForm() {
         >
           Add Transaction
         </button>
+        {mutation.isError && (
+          <p className="text-red-500">Error submitting transaction</p>
+        )}
       </div>
     </form>
   );
