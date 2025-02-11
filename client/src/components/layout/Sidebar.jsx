@@ -11,7 +11,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="bg-white w-52 h-screen fixed left-0 p-4 shadow-[2px_0_10px_rgba(0,0,0,0.1)]">
+    <div className="bg-white w-52 h-screen fixed left-0 p-4 shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-40">
       <h3 className="text-lg font-semibold mb-4 text-gray-600">Menu</h3>
       {menuItems.map(item => (
         <Link

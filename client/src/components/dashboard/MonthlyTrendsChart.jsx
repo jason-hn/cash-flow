@@ -30,10 +30,10 @@ export default function MonthlyTrendsChart({ transactions }) {
       acc[monthKey] = { income: 0, expenses: 0 };
     }
     
-    if (t.category === 'income') {
-      acc[monthKey].income += Math.abs(Number(t.amount));
+    if (t.type === 'income') {
+      acc[monthKey].income += Number(t.amount);
     } else {
-      acc[monthKey].expenses += Math.abs(Number(t.amount));
+      acc[monthKey].expenses += Number(t.amount);
     }
     
     return acc;
@@ -71,6 +71,13 @@ export default function MonthlyTrendsChart({ transactions }) {
           font: {
             family: "'Segoe UI', sans-serif",
             size: 12
+          }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return `${context.dataset.label}: $${context.formattedValue}`;
           }
         }
       }

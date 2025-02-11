@@ -13,11 +13,11 @@ ChartJS.register(
 );
 
 export default function ExpensesPieChart({ transactions }) {
-  // Group transactions by category
+  // Group transactions by category (only expenses)
   const expensesByCategory = transactions
-    .filter(t => t.category != 'expense')
+    .filter(t => t.type === 'expense')
     .reduce((acc, t) => {
-      acc[t.category] = (acc[t.category] || 0) + Math.abs(Number(t.amount));
+      acc[t.category] = (acc[t.category] || 0) + Number(t.amount);
       return acc;
     }, {});
 
@@ -45,6 +45,13 @@ export default function ExpensesPieChart({ transactions }) {
           font: {
             family: "'Segoe UI', sans-serif",
             size: 12
+          }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return `$${context.formattedValue}`;
           }
         }
       }

@@ -13,8 +13,8 @@ export default function Dashboard() {
 
   // Calculate summary statistics
   const stats = transactions.reduce((acc, t) => {
-    const amount = Math.abs(Number(t.amount));
-    if (t.category === 'income') {
+    const amount = Number(t.amount);
+    if (t.type === 'income') {
       acc.totalIncome += amount;
     } else {
       acc.totalExpenses += amount;
@@ -23,6 +23,7 @@ export default function Dashboard() {
   }, { totalIncome: 0, totalExpenses: 0 });
 
   const netSavings = stats.totalIncome - stats.totalExpenses;
+  const remainingBudget = 3000 - stats.totalExpenses; // Example monthly budget of $3000
 
   return (
     <div className="p-8">
@@ -44,8 +45,8 @@ export default function Dashboard() {
         />
         <SummaryCard 
           title="Remaining Budget" 
-          amount="$500.00"
-          type="income"
+          amount={`$${remainingBudget.toFixed(2)}`}
+          type={remainingBudget >= 0 ? "income" : "expense"}
         />
       </div>
 
