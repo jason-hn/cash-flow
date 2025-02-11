@@ -14,7 +14,7 @@ export default function Dashboard() {
   // Calculate summary statistics
   const stats = transactions.reduce((acc, t) => {
     const amount = Math.abs(Number(t.amount));
-    if (t.type === 'income') {
+    if (t.category === 'income') {
       acc.totalIncome += amount;
     } else {
       acc.totalExpenses += amount;
@@ -39,7 +39,7 @@ export default function Dashboard() {
         />
         <SummaryCard 
           title="Net Savings" 
-          amount={`$${netSavings.toFixed(2)}`}
+          amount={`$${Math.abs(netSavings).toFixed(2)}`}
           type={netSavings >= 0 ? "income" : "expense"}
         />
         <SummaryCard 
