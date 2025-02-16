@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Transaction from './models/Transaction.js';
+import Budget from './models/Budget.js';
 
 dotenv.config();
 const app = express();
@@ -88,6 +89,65 @@ app.delete('/api/transactions/:id', async (req, res) => {
       return res.status(404).json({ message: 'Transaction not found' });
     }
     res.json({ message: 'Transaction deleted' });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Get all budgets
+app.get('/api/budgets', async (req, res) => {
+  try {
+    const budgets = await Budget.find();
+    res.json(budgets);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Add budget
+app.post('/api/budgets', async (req, res) => {
+  try {
+    // Check if budget for this category already exists
+    const existingBudget = await Budget.findOne({ category: req.body.category });
+    if (existingBudget) {
+      return res.status(400).json({ 
+        message: 'A budget for this category already exists' 
+      });
+    }
+
+    const budget = new Budget(req.body);
+    const savedBudget = await budget.save();
+    res.status(201).json(savedBudget);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Update budget
+app.put('/api/budgets/:id', async (req, res) => {
+  try {
+    const updatedBudget = await Budget.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedBudget) {
+      return res.status(404).json({ message: 'Budget not found' });
+    }
+    res.json(updatedBudget);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Delete budget
+app.delete('/api/budgets/:id', async (req, res) => {
+  try {
+    const deletedBudget = await Budget.findByIdAndDelete(req.params.id);
+    if (!deletedBudget) {
+      return res.status(404).json({ message: 'Budget not found' });
+    }
+    res.json({ message: 'Budget deleted' });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

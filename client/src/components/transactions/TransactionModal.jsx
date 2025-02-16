@@ -1,17 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TransactionAPI } from '../../api/transactions';
 import { CATEGORIES, CATEGORY_DETAILS } from '../../utils/constants';
+import { parseISO, format, startOfDay, addHours } from 'date-fns';
 
 export default function TransactionModal({ isOpen, onClose, transaction, mode = 'create' }) {
   const queryClient = useQueryClient();
-  const [type, setType] = useState(transaction?.type || 'income');
-  const [formData, setFormData] = useState({
+  const [error, setError] = useState(null);
+  
+  // Initialize type and formData using a function to ensure consistent default values
+  const getInitialType = () => transaction?.type || 'income';
+  const getInitialFormData = () => ({
     amount: transaction?.amount || '',
-    category: transaction?.category || 'salary',
-    date: transaction?.date.split('T')[0] || new Date().toISOString().split('T')[0],
+    category: transaction?.category || (transaction?.type === 'expense' ? 'groceries' : 'salary'),
+    date: transaction?.date ? 
+      format(parseISO(transaction.date), 'yyyy-MM-dd') : 
+      format(new Date(), 'yyyy-MM-dd'),
     description: transaction?.description || ''
   });
+
+  const [type, setType] = useState(getInitialType());
+  const [formData, setFormData] = useState(getInitialFormData());
+
+  // Reset form when modal opens/closes or transaction changes
+  useEffect(() => {
+    if (isOpen) {
+      setType(getInitialType());
+      setFormData(getInitialFormData());
+    }
+  }, [isOpen, transaction]);
 
   const categories = {
     income: CATEGORIES.filter(cat => CATEGORY_DETAILS[cat].type === 'income')
@@ -35,17 +52,28 @@ export default function TransactionModal({ isOpen, onClose, transaction, mode = 
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['transactions']);
+      setError(null);
       onClose();
+    },
+    onError: (error) => {
+      setError(error.message || 'Failed to save transaction');
     }
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Parse the date string and set to start of day in local timezone
+    const baseDate = startOfDay(parseISO(formData.date));
+    
+    // Add 1 hour buffer to ensure same date across timezones
+    const adjustedDate = addHours(baseDate, 1);
+    
     mutation.mutate({
       type,
       amount: Math.abs(Number(formData.amount)),
       category: formData.category,
-      date: formData.date,
+      date: adjustedDate.toISOString(),
       description: formData.description
     });
   };
@@ -75,6 +103,12 @@ export default function TransactionModal({ isOpen, onClose, transaction, mode = 
             ×
           </button>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
 
         <div className="flex gap-4 mb-6">
           <button

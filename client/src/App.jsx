@@ -1,8 +1,12 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import Dashboard from './pages/Dashboard';
+import Transactions from './pages/Transactions';
+import Reports from './pages/Reports';
+import Budgets from './pages/Budgets';
+import Settings from './pages/Settings';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -22,7 +26,13 @@ export default function App() {
           <Navbar />
           <Sidebar />
           <main className="ml-52 pt-16">
-            <Dashboard />
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/transactions" element={<Transactions />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/budgets" element={<Budgets />} />
+              <Route path="/settings" element={<Settings />} />
+            </Routes>
           </main>
         </div>
       </Router>
