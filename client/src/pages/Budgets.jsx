@@ -4,14 +4,17 @@ import BudgetModal from '../components/budgets/BudgetModal';
 import BudgetCard from '../components/budgets/BudgetCard';
 import { BudgetAPI } from '../api/budgets';
 import { TransactionAPI } from '../api/transactions';
+import useAuthStore from '../store/authStore';
 
 export default function Budgets() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState(null);
+  const { user } = useAuthStore();
 
   const { data: budgets = [] } = useQuery({
-    queryKey: ['budgets'],
-    queryFn: BudgetAPI.getAll
+    queryKey: ['budgets', user?._id],
+    queryFn: BudgetAPI.getAll,
+    enabled: !!user
   });
 
   const { data: transactions = [] } = useQuery({
@@ -51,17 +54,27 @@ export default function Budgets() {
       </div>
 
       <div className="grid gap-4">
-        {budgets.map(budget => (
-          <BudgetCard
-            key={budget._id}
-            budget={budget}
-            spent={getSpentAmount(budget.category)}
-            onEdit={() => {
-              setEditingBudget(budget);
-              setIsModalOpen(true);
-            }}
-          />
-        ))}
+        {budgets.length === 0 && (
+          <div className="bg-white p-8 rounded-xl shadow-card text-center text-gray-500">
+            <div className="flex flex-col items-center gap-4">
+              <span className="text-4xl">📥</span>
+              <p>No budgets created yet. Start by adding your first budget!</p>
+            </div>
+          </div>
+        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+          {budgets.map(budget => (
+            <BudgetCard
+              key={budget._id}
+              budget={budget}
+              spent={getSpentAmount(budget.category)}
+              onEdit={() => {
+                setEditingBudget(budget);
+                setIsModalOpen(true);
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       <BudgetModal

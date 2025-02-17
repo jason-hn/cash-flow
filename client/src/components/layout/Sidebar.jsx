@@ -5,14 +5,13 @@ export default function Sidebar() {
   const menuItems = [
     { path: '/', label: 'Dashboard', icon: '📊' },
     { path: '/transactions', label: 'Transactions', icon: '📝' },
-    { path: '/reports', label: 'Reports', icon: '📈' },
     { path: '/budgets', label: 'Budgets', icon: '💰' },
     { path: '/settings', label: 'Settings', icon: '⚙️' }
   ];
 
   return (
-    <div className="bg-white w-52 h-screen fixed left-0 p-4 shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-40">
-      <h3 className="text-lg font-semibold mb-4 text-gray-600">Menu</h3>
+    <div className="bg-white w-40 lg:w-52 h-screen fixed left-0 top-16 shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-40">
+      <h3 className="mt-8 mb-4 ml-4 text-lg font-semibold text-gray-600 hidden lg:block">Menu</h3>
       {menuItems.map(item => (
         <Link
           key={item.path}

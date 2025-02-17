@@ -10,6 +10,9 @@ module.exports = {
         'income-green': '#6AC259',
         'expense-red': '#E94F4F',
         bg: '#f5f7fa',
+
+        DEFAULT: '#2563eb',
+        hover: '#1d4ed8'
       },
       fontFamily: {
         sans: ['Segoe UI', 'system-ui', 'sans-serif'],

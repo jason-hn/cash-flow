@@ -81,14 +81,20 @@ export default function Reports() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-xl shadow-card">
-          <h3 className="text-center text-gray-600 mb-4">Spending by Category</h3>
-          <ExpensesPieChart transactions={filteredTransactions} />
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-card">
-          <h3 className="text-center text-gray-600 mb-4">Income vs. Expenses Trend</h3>
-          <MonthlyTrendsChart transactions={filteredTransactions} />
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+          <div className="bg-white p-6 rounded-xl shadow-card w-full">
+            <h3 className="text-center text-gray-600 mb-6">Spending by Category</h3>
+            <div className="h-[500px]">
+              <ExpensesPieChart transactions={filteredTransactions} />
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-card w-full">
+            <h3 className="text-center text-gray-600 mb-6">Income vs. Expenses Trend</h3>
+            <div className="h-[500px]">
+              <MonthlyTrendsChart transactions={filteredTransactions} />
+            </div>
+          </div>
         </div>
       </div>
     </div>

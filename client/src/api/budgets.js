@@ -1,51 +1,17 @@
-const BASE_URL = 'http://localhost:5001/api';
+import api from './api';
+
+const handleResponse = (response) => {
+  return response.data;
+};
 
 export const BudgetAPI = {
-  async getAll() {
-    const response = await fetch(`${BASE_URL}/budgets`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch budgets');
-    }
-    return response.json();
-  },
-
-  async create(data) {
-    const response = await fetch(`${BASE_URL}/budgets`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to create budget');
-    }
-    return response.json();
-  },
-
-  async update(id, data) {
-    const response = await fetch(`${BASE_URL}/budgets/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to update budget');
-    }
-    return response.json();
-  },
-
-  async delete(id) {
-    const response = await fetch(`${BASE_URL}/budgets/${id}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to delete budget');
-    }
-    return response.json();
-  },
+  // GET operations
+  getAll: () => api.get('/budgets').then(handleResponse),
+  
+  // CRUD operations
+  create: (data) => api.post('/budgets', data).then(handleResponse),
+  
+  update: (id, data) => api.put(`/budgets/${id}`, data).then(handleResponse),
+  
+  delete: (id) => api.delete(`/budgets/${id}`).then(handleResponse)
 }; 

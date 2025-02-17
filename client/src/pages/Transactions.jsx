@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { TransactionAPI } from '../api/transactions';
 import TransactionsTable from '../components/dashboard/TransactionsTable';
 import { CATEGORIES, CATEGORY_DETAILS } from '../utils/constants';
+import Skeleton from '../components/ui/Skeleton';
 
 export default function Transactions() {
   const [filters, setFilters] = useState({
@@ -11,7 +12,7 @@ export default function Transactions() {
     date: ''
   });
 
-  const { data: transactions = [] } = useQuery({
+  const { data: transactions = [], isLoading } = useQuery({
     queryKey: ['transactions'],
     queryFn: TransactionAPI.getAll
   });
@@ -65,7 +66,22 @@ export default function Transactions() {
         />
       </div>
 
-      <TransactionsTable transactions={filteredTransactions} />
+      {isLoading ? (
+        <div className="space-y-4">
+          {/* Search filter skeleton */}
+          <div className="flex gap-4 mb-6">
+            <Skeleton className="h-12 w-[300px]" />
+            <Skeleton className="h-12 w-32" />
+            <Skeleton className="h-12 w-32" />
+          </div>
+          
+          {/* Table skeleton */}
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      ) : (
+        <TransactionsTable transactions={filteredTransactions} />
+      )}
     </div>
   );
 } 

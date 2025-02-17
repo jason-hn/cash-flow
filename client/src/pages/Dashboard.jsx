@@ -27,26 +27,30 @@ export default function Dashboard() {
 
   return (
     <div className="p-8">
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <SummaryCard 
           title="Total Income" 
           amount={`$${stats.totalIncome.toFixed(2)}`}
           type="income"
+          className="min-w-[200px]"
         />
         <SummaryCard 
           title="Total Expenses" 
           amount={`$${stats.totalExpenses.toFixed(2)}`}
           type="expense"
+          className="min-w-[200px]"
         />
         <SummaryCard 
           title="Net Savings" 
           amount={`$${Math.abs(netSavings).toFixed(2)}`}
           type={netSavings >= 0 ? "income" : "expense"}
+          className="min-w-[200px]"
         />
         <SummaryCard 
           title="Remaining Budget" 
           amount={`$${remainingBudget.toFixed(2)}`}
           type={remainingBudget >= 0 ? "income" : "expense"}
+          className="min-w-[200px]"
         />
       </div>
 
