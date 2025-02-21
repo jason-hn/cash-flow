@@ -44,7 +44,7 @@ export default function Budgets() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Budgets</h1>
+        <h1 className="text-2xl font-bold">Budgets - Current Month</h1>
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-primary/90"

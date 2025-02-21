@@ -49,14 +49,12 @@ export default function MonthlyTrendsChart({ transactions }) {
         data: months.map(month => monthlyData[month].income),
         borderColor: '#6AC259',
         backgroundColor: '#6AC259',
-        tension: 0.4
       },
       {
         label: 'Expenses',
         data: months.map(month => monthlyData[month].expenses),
         borderColor: '#E94F4F',
         backgroundColor: '#E94F4F',
-        tension: 0.4
       }
     ]
   };

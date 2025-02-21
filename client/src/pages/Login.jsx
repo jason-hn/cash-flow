@@ -13,7 +13,6 @@ export default function Login() {
     let timeoutId;
     
     const loadGoogleScript = () => {
-      // Check if script is already loaded
       if (document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
         initializeGoogle();
         return;
@@ -49,14 +48,12 @@ export default function Login() {
         );
         setIsGoogleLoading(false);
       } else {
-        // Retry after a short delay if google object isn't available
         timeoutId = setTimeout(initializeGoogle, 100);
       }
     };
 
     loadGoogleScript();
 
-    // Cleanup
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
@@ -82,55 +79,44 @@ export default function Login() {
     await useAuthStore.getState().login(email, password);
   };
 
-  // If user is already logged in, redirect to home
   if (user) {
     return <Navigate to="/" replace />;
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-[400px] w-full space-y-8 bg-white p-8 rounded-lg shadow">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">CashFlow</h1>
-          <p className="text-gray-600">Personal Finance Tracker</p>
+          <h1 className="text-4xl font-bold text-indigo-900 mb-2">CashFlow</h1>
+          <p className="text-gray-600">Smart Money Management, Simplified</p>
         </div>
         
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <div>
+            <input
+              type="email"
+              required
+              placeholder="Email Address"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-900 focus:border-indigo-900 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          
+          <div>
+            <input
+              type="password"
+              required
+              placeholder="Password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-900 focus:border-indigo-900 outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
 
           <button
             type="submit"
-            className="w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200 font-medium focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full py-3 bg-indigo-900 text-white rounded-lg hover:bg-indigo-800 transition-colors"
           >
             Sign In
           </button>
@@ -141,21 +127,21 @@ export default function Login() {
             <div className="w-full border-t border-gray-300"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            <span className="px-4 bg-white text-gray-500">Or continue with</span>
           </div>
         </div>
 
         {isGoogleLoading ? (
           <div className="w-full h-10 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-900"></div>
           </div>
         ) : (
           <div id="googleSignInDiv" className="w-full flex justify-center" />
         )}
 
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-gray-600">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link to="/signup" className="text-indigo-900 hover:text-indigo-800">
             Create account
           </Link>
         </div>

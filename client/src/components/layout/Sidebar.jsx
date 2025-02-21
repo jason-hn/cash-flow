@@ -5,8 +5,8 @@ export default function Sidebar() {
   const menuItems = [
     { path: '/', label: 'Dashboard', icon: '📊' },
     { path: '/transactions', label: 'Transactions', icon: '📝' },
-    { path: '/budgets', label: 'Budgets', icon: '💰' },
-    { path: '/settings', label: 'Settings', icon: '⚙️' }
+    { path: '/reports', label: 'Reports', icon: '📈' },
+    { path: '/budgets', label: 'Budgets', icon: '💰' }
   ];
 
   return (

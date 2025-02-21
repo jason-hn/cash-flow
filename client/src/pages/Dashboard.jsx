@@ -23,25 +23,25 @@ export default function Dashboard() {
   }, { totalIncome: 0, totalExpenses: 0 });
 
   const netSavings = stats.totalIncome - stats.totalExpenses;
-  const remainingBudget = 3000 - stats.totalExpenses; // Example monthly budget of $3000
+  const remainingBudget = 2000 - stats.totalExpenses; // Example monthly budget of $3000
 
   return (
     <div className="p-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <SummaryCard 
-          title="Total Income" 
+          title="Monthly Income" 
           amount={`$${stats.totalIncome.toFixed(2)}`}
           type="income"
           className="min-w-[200px]"
         />
         <SummaryCard 
-          title="Total Expenses" 
+          title="Monthly Expenses" 
           amount={`$${stats.totalExpenses.toFixed(2)}`}
           type="expense"
           className="min-w-[200px]"
         />
         <SummaryCard 
-          title="Net Savings" 
+          title="Monthly Savings" 
           amount={`$${Math.abs(netSavings).toFixed(2)}`}
           type={netSavings >= 0 ? "income" : "expense"}
           className="min-w-[200px]"

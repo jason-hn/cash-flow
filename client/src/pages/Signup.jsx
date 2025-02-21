@@ -32,62 +32,72 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
-        <h2 className="text-center text-3xl font-bold text-gray-900">Create Account</h2>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-[400px] w-full space-y-8 bg-white p-8 rounded-lg shadow">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-indigo-900 mb-2">CashFlow</h1>
+          <p className="text-gray-600">Smart Money Management, Simplified</p>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
             <input
-              id="email"
               type="email"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+              placeholder="Email Address"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-900 focus:border-indigo-900 outline-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+          
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
             <input
-              id="password"
               type="password"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+              placeholder="Password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-900 focus:border-indigo-900 outline-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-              Confirm Password
-            </label>
             <input
-              id="confirmPassword"
               type="password"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+              placeholder="Confirm Password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-900 focus:border-indigo-900 outline-none"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
+
           <button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90"
+            className="w-full py-3 bg-indigo-900 text-white rounded-lg hover:bg-indigo-800 transition-colors"
           >
-            Sign Up
+            Create Account
           </button>
-          <div className="text-center text-sm">
-            <span className="text-gray-600">Already have an account? </span>
-            <Link to="/login" className="text-primary hover:text-primary/80">
-              Log in
-            </Link>
-          </div>
         </form>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-gray-500">Or continue with</span>
+          </div>
+        </div>
+
+        <div id="googleSignInDiv" className="w-full flex justify-center" />
+
+        <div className="text-center text-gray-600">
+          Already have an account?{' '}
+          <Link to="/login" className="text-indigo-900 hover:text-indigo-800">
+            Sign in
+          </Link>
+        </div>
       </div>
     </div>
   );
