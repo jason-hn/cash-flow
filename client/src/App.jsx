@@ -10,7 +10,6 @@ import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
-import PortfolioPreview from './pages/PortfolioPreview';
 
 // Create a client
 export const queryClient = new QueryClient({
@@ -31,7 +30,6 @@ export default function App() {
             {/* Auth routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/portfolio-preview" element={<PortfolioPreview />} />
             
             {/* Protected app routes */}
             <Route element={<ProtectedRoute />}>
