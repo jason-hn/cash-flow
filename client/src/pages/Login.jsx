@@ -10,6 +10,9 @@ export default function Login() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(true);
 
   useEffect(() => {
+    console.log("Login component mounted");
+    console.log("Google client ID:", import.meta.env.VITE_GOOGLE_CLIENT_ID);
+    
     let timeoutId;
     
     const loadGoogleScript = () => {
@@ -31,6 +34,9 @@ export default function Login() {
     };
 
     const initializeGoogle = () => {
+      console.log("Initializing Google Sign-In...");
+      console.log("Google object available:", !!window.google);
+      
       if (window.google) {
         window.google.accounts.id.initialize({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
@@ -39,6 +45,7 @@ export default function Login() {
 
         setTimeout(() => {
           const googleButton = document.getElementById('googleSignInDiv');
+          console.log("Found button container:", !!googleButton);
           if (googleButton) {
             window.google.accounts.id.renderButton(
               googleButton,
