@@ -37,16 +37,21 @@ export default function Login() {
           callback: handleGoogleSignIn
         });
 
-        window.google.accounts.id.renderButton(
-          document.getElementById('googleSignInDiv'),
-          { 
-            theme: 'outline', 
-            size: 'large', 
-            width: '100%',
-            text: 'continue_with'
+        setTimeout(() => {
+          const googleButton = document.getElementById('googleSignInDiv');
+          if (googleButton) {
+            window.google.accounts.id.renderButton(
+              googleButton,
+              { 
+                theme: 'outline', 
+                size: 'large', 
+                width: 300,
+                text: 'continue_with'
+              }
+            );
           }
-        );
-        setIsGoogleLoading(false);
+          setIsGoogleLoading(false);
+        }, 0);
       } else {
         timeoutId = setTimeout(initializeGoogle, 100);
       }
