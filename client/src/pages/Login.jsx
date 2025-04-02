@@ -14,6 +14,8 @@ export default function Login() {
     console.log("Google client ID:", import.meta.env.VITE_GOOGLE_CLIENT_ID);
     
     let timeoutId;
+    let retryCount = 0;
+    const MAX_RETRIES = 1000;
     
     const loadGoogleScript = () => {
       if (document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
@@ -34,7 +36,7 @@ export default function Login() {
     };
 
     const initializeGoogle = () => {
-      console.log("Initializing Google Sign-In...");
+      console.log("Initializing Google Sign-In...", retryCount);
       console.log("Google object available:", !!window.google);
       
       if (window.google) {
@@ -43,10 +45,11 @@ export default function Login() {
           callback: handleGoogleSignIn
         });
 
-        setTimeout(() => {
-          const googleButton = document.getElementById('googleSignInDiv');
-          console.log("Found button container:", !!googleButton);
-          if (googleButton) {
+        const googleButton = document.getElementById('googleSignInDiv');
+        console.log("Found button container:", !!googleButton);
+        
+        if (googleButton) {
+          try {
             window.google.accounts.id.renderButton(
               googleButton,
               { 
@@ -56,9 +59,23 @@ export default function Login() {
                 text: 'continue_with'
               }
             );
+            console.log("Button render call completed");
+            setIsGoogleLoading(false);
+            return; // Success - exit the function
+          } catch (error) {
+            console.error("Error rendering button:", error);
           }
+        }
+        
+        // If we got here, either button wasn't found or rendering failed
+        retryCount++;
+        if (retryCount < MAX_RETRIES) {
+          console.log(`Retry attempt ${retryCount}/${MAX_RETRIES}`);
+          timeoutId = setTimeout(initializeGoogle, 300);
+        } else {
+          console.error("Max retries reached, giving up");
           setIsGoogleLoading(false);
-        }, 0);
+        }
       } else {
         timeoutId = setTimeout(initializeGoogle, 100);
       }
