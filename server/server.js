@@ -16,8 +16,8 @@ const app = express();
 app.use(cors({ 
   origin: [
     'http://localhost:5173', 
-    'http://localhost:3000',
-    'https://jason-han.com'
+    'http://cashflow.jason-han.com',
+    // 'https://jason-han.com'
   ],
   credentials: true 
 }));
