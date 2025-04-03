@@ -15,11 +15,13 @@ const app = express();
 // Middleware
 app.use(cors({ 
   origin: [
-    // 'http://localhost:5173', 
-    'https://cashflow.jason-han.com/',
-    // 'https://jason-han.com'
+    'https://cashflow.jason-han.com',
+    // Add other origins if needed
+    'http://localhost:5173' // For local development
   ],
-  credentials: true 
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
