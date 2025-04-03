@@ -160,13 +160,15 @@ export default function Login() {
           </div>
         </div>
 
-        {isGoogleLoading ? (
-          <div className="w-full h-10 flex items-center justify-center">
+        <div className="w-full flex justify-center">
+          {isGoogleLoading && (
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-900"></div>
-          </div>
-        ) : (
-          <div id="googleSignInDiv" className="w-full flex justify-center" />
-        )}
+          )}
+          <div 
+            id="googleSignInDiv" 
+            className={isGoogleLoading ? "hidden" : ""} 
+          />
+        </div>
 
         <div className="text-center text-gray-600">
           Don't have an account?{' '}
