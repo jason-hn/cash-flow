@@ -44,6 +44,7 @@ export default function App() {
                         <div className="p-6 mx-auto w-full max-w-[120rem]">
                           <Routes>
                             <Route path="/" element={<Dashboard />} />
+                            <Route path="/login" element={<Login />} />
                             <Route path="/transactions" element={<Transactions />} />
                             <Route path="/reports" element={<Reports />} />
                             <Route path="/budgets" element={<Budgets />} />
