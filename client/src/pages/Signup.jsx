@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 import api from '../api/api';
@@ -7,7 +7,98 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isGoogleLoading, setIsGoogleLoading] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("Signup component mounted");
+    
+    let timeoutId;
+    let retryCount = 0;
+    const MAX_RETRIES = 1000;
+    
+    const loadGoogleScript = () => {
+      if (document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
+        initializeGoogle();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeGoogle;
+      script.onerror = () => {
+        console.error('Failed to load Google Sign-In script');
+        setIsGoogleLoading(false);
+      };
+      document.body.appendChild(script);
+    };
+
+    const initializeGoogle = () => {
+      console.log("Initializing Google Sign-In...", retryCount);
+      
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+          callback: handleGoogleSignIn
+        });
+
+        const googleButton = document.getElementById('googleSignInDiv');
+        
+        if (googleButton) {
+          try {
+            window.google.accounts.id.renderButton(
+              googleButton,
+              { 
+                theme: 'outline', 
+                size: 'large', 
+                width: 300,
+                text: 'continue_with'
+              }
+            );
+            setIsGoogleLoading(false);
+            return; // Success - exit the function
+          } catch (error) {
+            console.error("Error rendering button:", error);
+          }
+        }
+        
+        // If we got here, either button wasn't found or rendering failed
+        retryCount++;
+        if (retryCount < MAX_RETRIES) {
+          timeoutId = setTimeout(initializeGoogle, 300);
+        } else {
+          console.error("Max retries reached, giving up");
+          setIsGoogleLoading(false);
+        }
+      } else {
+        timeoutId = setTimeout(initializeGoogle, 100);
+      }
+    };
+
+    loadGoogleScript();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
+
+  const handleGoogleSignIn = async (response) => {
+    try {
+      const res = await api.post('/auth/google', {
+        credential: response.credential
+      });
+      
+      const { user, token } = res.data;
+      localStorage.setItem('token', token);
+      useAuthStore.setState({ user, token, isLoading: false });
+      navigate('/');
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      alert(error.response?.data?.message || 'Google sign-in failed');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,7 +181,15 @@ export default function Signup() {
           </div>
         </div>
 
-        <div id="googleSignInDiv" className="w-full flex justify-center" />
+        <div className="w-full flex justify-center">
+          {isGoogleLoading && (
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-900"></div>
+          )}
+          <div 
+            id="googleSignInDiv" 
+            className={isGoogleLoading ? "hidden" : ""} 
+          />
+        </div>
 
         <div className="text-center text-gray-600">
           Already have an account?{' '}
